@@ -57,7 +57,9 @@ const login = async (req,res,next)=>{
    }
    res.cookie("access_token", token , {
     expires: new Date(Date.now() + (20 * 3600 * 1000)) ,
-    httpOnly : true
+    httpOnly : true,
+    sameSite : "none",
+    secure: true
    }).status(200).json({userId: existingUser.id, email: existingUser.email })
 }
 const logout = (req,res,next)=>{
@@ -114,7 +116,9 @@ const signup = async (req,res,next)=>{
 
     res.cookie("access_token" , token , {
         expires: new Date(Date.now() + (20 * 3600 * 1000)) ,
-        httpOnly: true
+        httpOnly: true,
+        sameSite: "none",
+        secure: true
     }).status(201).json({userId: newUser.id , email: newUser.email})
 }
 const updateUser = async (req,res,next)=>{

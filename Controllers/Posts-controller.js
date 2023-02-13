@@ -72,14 +72,14 @@ const updatePost = async (req, res, next) => {
   try {
     post = await Post.findById(postId);
     if (post.author.toString() === req.userData.userId) {
-      const cat = req.body.categories.split(",");
+      const cat =req.body.categories && req.body.categories.split(",");
       try {
         post = await Post.findByIdAndUpdate(postId, {
           title: req.body.title,
           description: req.body.description,
           image: req.file && req.file.filename,
           author: req.userData.userId,
-          categories: [...cat],
+          categories: cat && [...cat],
         });
         await post.save();
       } catch (err) {
@@ -90,7 +90,7 @@ const updatePost = async (req, res, next) => {
     }
   } catch (err) {
     return next(
-      new httpError("failed to update the place, please try later", 500)
+      new httpError("failed to update the post, please try later", 500)
     );
   }
   res.status(200).json({ post: post.toObject({ getters: true }) });
@@ -141,13 +141,13 @@ const createPost = async (req, res, next) => {
   } catch (err) {
     return next(new httpError(err, 500));
   }
-  const cat = req.body.categories.split(',')
+  const cat = req.body.categories && req.body.categories.split(',')
   const newPost = new Post({
     title: req.body.title,
     description: req.body.description,
     image: req.file && req.file.filename,
     author: req.userData.userId,
-    categories: [...cat],
+    categories: cat && [...cat],
   });
   
   if (!user) {
